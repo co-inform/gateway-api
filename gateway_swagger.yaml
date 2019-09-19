@@ -80,66 +80,31 @@ paths:
             $ref: "#/definitions/QueryResponse"
         404:
           description: "no such query_id"
-  /misinfome:
+  /modules/response/{transaction_id}:
     post:
       tags: 
       - "Modules"
-      summary: "post a finished MisinfoMe query"
-      description: "Post a finished MisinfoMe query"
+      summary: "post a finished module query"
+      description: "Post a finished query"
       parameters:
+      - in: "path"
+        name: "transaction_id"
+        description: "the transaction_id given by the gateway at the post of the query"
+        required: true
+        type: "string"
       - in: "body"
         name: "body"
-        description: "MisinfoMe query response"
+        description: "Module query response"
         required: true
         schema: 
           $ref: "#/definitions/ModuleAnswer"
-      security:
-        - ApiKeyAuth: []
       responses:
         200:
           description: "successful operation"
         401:
           description: "unauthorized operation"
-  /contentanalysis:
-    post:
-      tags:
-        - "Modules"
-      summary: "post a finished Content Analysis query"
-      description: "Post a finished Content Analysis query"
-      parameters:
-        - in: "body"
-          name: "body"
-          description: "Content Analysis query response"
-          required: true
-          schema:
-            $ref: "#/definitions/ModuleAnswer"
-      security:
-        - ApiKeyAuth: []
-      responses:
-        200:
-          description: "successful operation"
-        401:
-          description: "unauthorized operation"
-  /module_x:
-    post:
-      tags:
-        - "Modules"
-      summary: "post a finished module_x query"
-      description: "Post a finished module_x query"
-      parameters:
-        - in: "body"
-          name: "body"
-          description: "module_x query response"
-          required: true
-          schema:
-            $ref: "#/definitions/ModuleAnswer"
-      security:
-        - ApiKeyAuth: []
-      responses:
-        200:
-          description: "successful operation"
-        401:
-          description: "unauthorized operation"
+        404:
+          description: "no such transaction_id"
 definitions:
   QueryId:
     type: "string"
@@ -178,12 +143,5 @@ definitions:
   ModuleAnswer:
     type: "object"
     properties:
-      query_id:
-        type: "string"
-      answer:
+      response:
         type: "object"
-securityDefinitions:
-  ApiKeyAuth: 
-    type: "apiKey"
-    name: "post_api_key"
-    in: "header"
