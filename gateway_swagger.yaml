@@ -32,7 +32,7 @@ paths:
         200:
           description: "successful operation"
           schema:
-            $ref: "#/definitions/QueryId"
+            $ref: "#/definitions/PluginResponse"
         400:
           description: "Invalid input"
   /twitter/tweet:
@@ -40,7 +40,7 @@ paths:
       tags:
       - "Browser Plugin"
       summary: "Check a tweet"
-      description: "Sends a tweet to be cheched and gives back a 'query id'"
+      description: "Sends a tweet to be checked and gives back a 'query id'"
       operationId: "checkSource"
       produces: 
       - "application/json"
@@ -55,7 +55,7 @@ paths:
         200:
           description: "successful operation"
           schema:
-            $ref: "#/definitions/QueryId"
+            $ref: "#/definitions/PluginResponse"
         400:
           description: "Invalid input"
   /request/{query_id}:
@@ -79,7 +79,7 @@ paths:
           schema:
             $ref: "#/definitions/QueryResponse"
         404:
-          description: "no such response"
+          description: "no such query_id"
   /misinfome:
     post:
       tags: 
@@ -143,6 +143,19 @@ paths:
 definitions:
   QueryId:
     type: "string"
+  PluginResponse:
+    type: "object"
+    properties:
+      query_id:
+        $ref: "#/definitions/QueryId"
+      status:
+        $ref: "#/definitions/QueryStatus"
+  QueryStatus:
+    type: "string"
+    enum:
+      - "done"
+      - "partly_done"
+      - "in_progress"
   TwitterUser:
     type: "object"
     properties:
@@ -157,6 +170,11 @@ definitions:
         type: "string"
   QueryResponse:
     type: "object"
+    properties:
+      status:
+        $ref: "#/definitions/QueryStatus"
+      response:
+        type: "object"
   ModuleAnswer:
     type: "object"
     properties:
