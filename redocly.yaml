@@ -1,7 +1,0 @@
-specFileName: gateway_swagger.yaml
-apiTitle: Gateway
-splitSpec: false
-codeSamples: false
-swaggerUI: false
-travis: false
-oasVersion: '2.0'
