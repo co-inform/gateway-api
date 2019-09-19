@@ -1,0 +1,189 @@
+swagger: "2.0"
+info:
+  description: |
+    This document describes the API exposed by Co-Inform's Misinformation Detection Modules Gateway.
+    This Gateway is the single point of entrance of all the requests made by Co-Inform's Browser Plugin.
+  version: "0.0.1"
+  title: "[Draft] Co-Inform Gateway API"
+host: "api.coinform.eu"
+basePath: "/v2"
+#schemes:
+#- "https"
+paths:
+  /twitter/user:
+    post:
+      tags:
+      - "Browser Plugin"
+      summary: "Check a twitter user"
+      description: "Sends a twitter user to be checked and return a 'query id'"
+      operationId: "twitterUser"
+      consumes:
+      - "application/json"
+      produces:
+      - "application/json"
+      parameters:
+      - in: "body"
+        name: "body"
+        description: "A twitter user"
+        required: true
+        schema:
+          $ref: "#/definitions/TwitterUser"
+      responses:
+        200:
+          description: "successful operation"
+          schema:
+            $ref: "#/definitions/PluginResponse"
+        400:
+          description: "Invalid input"
+  /twitter/tweet:
+    post:
+      tags:
+      - "Browser Plugin"
+      summary: "Check a tweet"
+      description: "Sends a tweet to be checked and gives back a 'query id'"
+      operationId: "checkSource"
+      produces: 
+      - "application/json"
+      parameters:
+      - in: "body"
+        name: "body"
+        description: "A tweet"
+        required: true
+        schema:
+          $ref: "#/definitions/Tweet"
+      responses:
+        200:
+          description: "successful operation"
+          schema:
+            $ref: "#/definitions/PluginResponse"
+        400:
+          description: "Invalid input"
+  /request/{query_id}:
+    get:
+      tags:
+      - "Browser Plugin"
+      summary: "Get a response from a query"
+      description: "Get the request from a previous query"
+      operationId: "requestQueryId"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "query_id"
+        in: "path"
+        description: "the query_id given by an previous query"
+        required: true
+        type: "string"
+      responses:
+        200:
+          description: "successful operation"
+          schema:
+            $ref: "#/definitions/QueryResponse"
+        404:
+          description: "no such query_id"
+  /misinfome:
+    post:
+      tags: 
+      - "Modules"
+      summary: "post a finished MisinfoMe query"
+      description: "Post a finished MisinfoMe query"
+      parameters:
+      - in: "body"
+        name: "body"
+        description: "MisinfoMe query response"
+        required: true
+        schema: 
+          $ref: "#/definitions/ModuleAnswer"
+      security:
+        - ApiKeyAuth: []
+      responses:
+        200:
+          description: "successful operation"
+        401:
+          description: "unauthorized operation"
+  /contentanalysis:
+    post:
+      tags:
+        - "Modules"
+      summary: "post a finished Content Analysis query"
+      description: "Post a finished Content Analysis query"
+      parameters:
+        - in: "body"
+          name: "body"
+          description: "Content Analysis query response"
+          required: true
+          schema:
+            $ref: "#/definitions/ModuleAnswer"
+      security:
+        - ApiKeyAuth: []
+      responses:
+        200:
+          description: "successful operation"
+        401:
+          description: "unauthorized operation"
+  /module_x:
+    post:
+      tags:
+        - "Modules"
+      summary: "post a finished module_x query"
+      description: "Post a finished module_x query"
+      parameters:
+        - in: "body"
+          name: "body"
+          description: "module_x query response"
+          required: true
+          schema:
+            $ref: "#/definitions/ModuleAnswer"
+      security:
+        - ApiKeyAuth: []
+      responses:
+        200:
+          description: "successful operation"
+        401:
+          description: "unauthorized operation"
+definitions:
+  QueryId:
+    type: "string"
+  PluginResponse:
+    type: "object"
+    properties:
+      query_id:
+        $ref: "#/definitions/QueryId"
+      status:
+        $ref: "#/definitions/QueryStatus"
+  QueryStatus:
+    type: "string"
+    enum:
+      - "done"
+      - "partly_done"
+      - "in_progress"
+  TwitterUser:
+    type: "object"
+    properties:
+      user_id:
+        type: "string"
+      screen_name:
+        type: "string"
+  Tweet:
+    type: "object"
+    properties:
+      tweet_id:
+        type: "string"
+  QueryResponse:
+    type: "object"
+    properties:
+      status:
+        $ref: "#/definitions/QueryStatus"
+      response:
+        type: "object"
+  ModuleAnswer:
+    type: "object"
+    properties:
+      query_id:
+        type: "string"
+      answer:
+        type: "object"
+securityDefinitions:
+  ApiKeyAuth: 
+    type: "apiKey"
+    name: "post_api_key"
+    in: "header"
