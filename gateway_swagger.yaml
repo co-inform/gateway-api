@@ -115,6 +115,8 @@ definitions:
         $ref: "#/definitions/QueryId"
       status:
         $ref: "#/definitions/QueryStatus"
+    response:
+        $ref: "#/definitions/QueryResponse"
   QueryStatus:
     type: "string"
     enum:
