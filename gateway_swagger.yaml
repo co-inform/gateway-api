@@ -58,7 +58,7 @@ paths:
             $ref: "#/definitions/PluginResponse"
         400:
           description: "Invalid input"
-  /request/{query_id}:
+  /response/{query_id}:
     get:
       tags:
       - "Browser Plugin"
