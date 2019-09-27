@@ -77,7 +77,7 @@ paths:
                 $ref: "#/components/schemas/QueryResponse"
         404:
           description: "no such query_id"
-  /module/response/{transaction_id}:
+  /modules/response/{transaction_id}:
     post:
       tags: 
       - "Modules"
