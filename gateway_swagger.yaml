@@ -5,9 +5,8 @@ info:
     This Gateway is the single point of entrance of all the requests made by Co-Inform's Browser Plugin.
   version: "0.0.1"
   title: "[Draft] Co-Inform Gateway API"
-host: api.coinform.eu
-schemes:
-    - https
+servers:
+  - url: https://api.coinform.eu
 paths:
   /twitter/user:
     post:
