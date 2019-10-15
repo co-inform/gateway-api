@@ -5,9 +5,9 @@ info:
     This Gateway is the single point of entrance of all the requests made by Co-Inform's Browser Plugin.
   version: "0.0.1"
   title: "[Draft] Co-Inform Gateway API"
-host: api.coinform.eu
-schemes:
-    - https
+servers: 
+  - url: https://api.coinform.eu
+    description: staging server
 paths:
   /twitter/user:
     post:
@@ -16,13 +16,13 @@ paths:
       summary: "Check a twitter user"
       description: "Sends a twitter user to be checked and return a 'query id'"
       operationId: "twitterUser"
-      parameters:
-      - in: "body"
-        name: "body"
+      requestBody:
         description: "A twitter user"
         required: true
-        schema:
-          $ref: "#/components/schemas/TwitterUser"
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/TwitterUser"
       responses:
         200:
           description: "successful operation"
@@ -39,13 +39,13 @@ paths:
       summary: "Check a tweet"
       description: "Sends a tweet to be checked and gives back a 'query id'"
       operationId: "checkSource"
-      parameters:
-      - in: "body"
-        name: "body"
+      requestBody:
         description: "A tweet"
         required: true
-        schema:
-          $ref: "#/components/schemas/Tweet"
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/Tweet"
       responses:
         200:
           description: "successful operation"
