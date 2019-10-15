@@ -1,13 +1,13 @@
 openapi: "3.0.0"
+servers:
+  - url: https://api.coinform.eu/
+    description: The Gateway API server adress 
 info:
   description: |
     This document describes the API exposed by Co-Inform's Misinformation Detection Modules Gateway.
     This Gateway is the single point of entrance of all the requests made by Co-Inform's Browser Plugin.
   version: "0.0.1"
   title: "[Draft] Co-Inform Gateway API"
-servers: 
-  - url: https://api.coinform.eu
-    description: staging server
 paths:
   /twitter/user:
     post:
