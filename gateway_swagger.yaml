@@ -91,12 +91,13 @@ paths:
         required: true
         schema:
           type: "string"
-      - in: "body"
-        name: "body"
+      requestBody:
         description: "Module query response"
         required: true
-        schema: 
-          $ref: "#/components/schemas/ModuleResponse"
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ModuleResponse"
       responses:
         200:
           description: "successful operation"
@@ -125,6 +126,8 @@ components:
       type: "object"
       properties:
         tweet_id:
+          type: "string"
+        tweet_author:
           type: "string"
         tweet_text:
           type: "string"
