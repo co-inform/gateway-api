@@ -131,6 +131,17 @@ components:
           type: "string"
         tweet_text:
           type: "string"
+        tweet_urls:
+          type: array
+          items:
+            type: "object"
+            properties:
+              text_url:
+                type: "string"
+                description: "URL that appears in 'tweet_text'"
+              effective_url:
+                type: "string"
+                description: "Value of the HREF element in the HTML"
     QueryResponse:
       type: "object"
       properties:
