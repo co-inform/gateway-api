@@ -7,7 +7,7 @@ info:
     This document describes the API exposed by Co-Inform's Misinformation Detection Modules Gateway.
     This Gateway is the single point of entrance of all the requests made by Co-Inform's Browser Plugin.
   version: "0.0.1"
-  title: "[Draft] Co-Inform Gateway API"
+  title: "Co-Inform Gateway API"
 paths:
   /twitter/user:
     post:
@@ -55,6 +55,32 @@ paths:
                 $ref: "#/components/schemas/QueryResponse"
         400:
           description: "Invalid input"
+  /twitter/evaluate:
+    post:
+      tags:
+        - "Browser Plugin"
+      summary: "Send a user-provided tweet evaluation"
+      description: |
+        The users can provide feedback of an analysis made on a tweet. For this,
+        a label and optionally a URL can be sent.
+      operationId: "evaluateTweet"
+      requestBody:
+        description: "The evaluation data"
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/TweetEvaluation"
+      responses:
+        200:
+          description: "successful operation"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/UserEvaluationRegistered"
+        400:
+          description: "Invalid input"
+
   /response/{query_id}:
     get:
       tags:
@@ -115,6 +141,24 @@ components:
         - "done"
         - "partly_done"
         - "in_progress"
+    CredibilityLabel:
+      type: "string"
+      enum:
+        - "credible"
+        - "mostly credible"
+        - "credibility uncertain"
+        - "mostly not credible"
+        - "not credible"
+        - "not verifiable"
+    AccuracyLabel:
+      type: "string"
+      enum:
+        - "accurate"
+        - "accurate with considerations"
+        - "unsubstantiated"
+        - "inaccurate with considerations"
+        - "inaccurate"
+        - "not verifiable"
     TwitterUser:
       type: "object"
       properties:
@@ -130,6 +174,27 @@ components:
         tweet_author:
           type: "string"
         tweet_text:
+          type: "string"
+    TweetEvaluation:
+      type: "object"
+      properties:
+        tweet_id:
+          type: "string"
+        evaluation:
+          $ref: "#/components/schemas/UserEvaluation"
+    UserEvaluation:
+      type: "object"
+      properties:
+        label:
+          $ref: "#/components/schemas/AccuracyLabel"
+        url:
+          type: "string"
+        comment:
+          type: "string"
+    UserEvaluationRegistered:
+      type: "object"
+      properties:
+        evaluation_id:
           type: "string"
     QueryResponse:
       type: "object"
