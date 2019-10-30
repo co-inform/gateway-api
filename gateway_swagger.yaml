@@ -163,14 +163,16 @@ components:
       type: "object"
       properties:
         user_id:
-          type: "string"
+          type: "integer"
+          format: "int64"
         screen_name:
           type: "string"
     Tweet:
       type: "object"
       properties:
         tweet_id:
-          type: "string"
+          type: "integer"
+          format: "int64"
         tweet_author:
           type: "string"
         tweet_text:
