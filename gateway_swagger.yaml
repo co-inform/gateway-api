@@ -162,9 +162,9 @@ components:
     TwitterUser:
       type: "object"
       properties:
-        user_id:
-          type: "integer"
-          format: "int64"
+        #        user_id:
+        #          type: "integer"
+        #          format: "int64"
         screen_name:
           type: "string"
     Tweet:
