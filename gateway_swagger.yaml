@@ -205,6 +205,8 @@ components:
           $ref: "#/components/schemas/QueryStatus"
         response:
           type: "object"
+        module_response_code:
+          type: "object"
     ModuleResponse:
       type: "object"
       properties:
