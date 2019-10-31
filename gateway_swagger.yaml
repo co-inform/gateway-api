@@ -16,6 +16,7 @@ paths:
       summary: "Check a twitter user"
       description: "Sends a twitter user to be checked and return a 'query id'"
       operationId: "twitterUser"
+      deprecated: true
       requestBody:
         description: "A twitter user"
         required: true
@@ -162,15 +163,17 @@ components:
     TwitterUser:
       type: "object"
       properties:
-        user_id:
-          type: "string"
+        #        user_id:
+        #          type: "integer"
+        #          format: "int64"
         screen_name:
           type: "string"
     Tweet:
       type: "object"
       properties:
         tweet_id:
-          type: "string"
+          type: "integer"
+          format: "int64"
         tweet_author:
           type: "string"
         tweet_text:
