@@ -172,8 +172,7 @@ components:
       type: "object"
       properties:
         tweet_id:
-          type: "integer"
-          format: "int64"
+          type: "string"
         tweet_author:
           type: "string"
         tweet_text:
