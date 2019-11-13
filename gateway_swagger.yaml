@@ -208,8 +208,16 @@ components:
           $ref: "#/components/schemas/QueryStatus"
         response:
           type: "object"
+          properties:
+            rule_engine:
+              $ref: "#/components/schemas/RuleEngineOutput"
         module_response_code:
           type: "object"
+    RuleEngineOutput:
+      type: "object"
+      properties:
+        final_credibility:
+          $ref: "#/components/schemas/CredibilityLabel"
     ModuleResponse:
       type: "object"
       properties:
