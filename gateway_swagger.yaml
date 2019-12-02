@@ -103,6 +103,8 @@ paths:
           description: "successful operation"
 #       401:
 #         description: "unauthorized operation"
+        400:
+          description: "Bad request, malformed JSON"
         404:
           description: "no such transaction_id"
 components:
