@@ -82,7 +82,7 @@ paths:
         400:
           description: "Invalid input"
 
-  /response/{query_id}:
+  /response/{query_id}/{debug}:
     get:
       tags:
       - "Browser Plugin"
@@ -96,6 +96,12 @@ paths:
         required: true
         schema:
           type: "string"
+      - name: "debug"
+        in: "path"
+        description: "A string (can be anything, except empty) debug information"
+        required: false
+        schema:
+            type: "string"
       responses:
         200:
           description: "successful operation"
