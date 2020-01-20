@@ -16,18 +16,19 @@ paths:
       summary: "Login a Plugin user"
       description: "Logs a Plugin user in to the platform"
       requestBody:
-        description:
-          required: true
-          content:
-            application/json:
-              schema:
-                $ref: "#components/schemas/CoinformLoginUser"
+        description: "The user and password"
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CoinformLoginUser"
       responses:
         200:
           description: "User sucesfully logged in"
           content:
             application/json:
-              $ref: "#components/schemas/AuthToken"
+              schema:
+                $ref: "#/components/schemas/AuthToken"
         404:
           description: "No such user registered with CoInform"
   /register:
@@ -37,12 +38,12 @@ paths:
       summary: "Register a new Plugin user"
       description: "Registers a plugin user with the platform"
       requestBody:
-        description:
-          required: true
-          content:
-            application/json:
-              schema:
-                $ref: "#components/schemas/CoinformRegisterUser"
+        description: "The registration data"
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CoinformRegisterUser"
       responses:
         201:
           description: "New CoInform user successfully created"
