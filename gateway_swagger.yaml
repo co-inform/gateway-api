@@ -21,7 +21,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#components/schemas/CoinformUser"
+                $ref: "#components/schemas/CoinformLoginUser"
       responses:
         200:
           description: "User sucesfully logged in"
@@ -37,8 +37,12 @@ paths:
       summary: "Register a new Plugin user"
       description: "Registers a plugin user with the platform"
       requestBody:
-
-    //TODO
+        description:
+          required: true
+          content:
+            application/json:
+              schema:
+                $ref: "#components/schemas/CoinformRegisterUser"
       responses:
         201:
           description: "New CoInform user successfully created"
@@ -266,7 +270,14 @@ components:
       properties:
         response:
           type: "object"
-    CoinformUser:
+    CoinformLoginUser:
+      type: "object"
+      properties:
+        email:
+          type: "string"
+        password:
+          type: "string"
+    CoinformRegisterUser:
       type: "object"
       properties:
         email:
