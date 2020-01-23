@@ -151,6 +151,29 @@ paths:
                 $ref: "#/components/schemas/QueryResponse"
         404:
           description: "no such query_id"
+  /ruleengine/test:
+    post:
+      tags:
+        - "Browser Plugin"
+      summary: "Test the rule engine"
+      description: "Get the response from the rule engine for a set of test values"
+      operationId: "ruleEngineTest"
+      requestBody:
+        description: "rule engine test values"
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/RuleEngineTestInput"
+      responses:
+        200:
+          description: "ok"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/RuleEngineOutput"
+        400:
+          description: "not valid input"
   /module/response/{transaction_id}:
     post:
       tags:
@@ -266,6 +289,36 @@ components:
       properties:
         final_credibility:
           $ref: "#/components/schemas/CredibilityLabel"
+    RuleEngineTestInput:
+      type: "object"
+      properties:
+        misinfome:
+          type: "object"
+          properties:
+            cred:
+              type: "number"
+              format: "float"
+            conf:
+              type: "number"
+              format: "float"
+        stance:
+          type: "object"
+          properties:
+            cred:
+              type: "number"
+              format: "float"
+            conf:
+              type: "number"
+              format: "float"
+        claim_credibility:
+          type: "object"
+          properties:
+            cred:
+              type: "number"
+              format: "float"
+            conf:
+              type: "number"
+              format: "float"
     ModuleResponse:
       type: "object"
       properties:
