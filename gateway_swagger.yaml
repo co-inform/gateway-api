@@ -123,6 +123,8 @@ paths:
                 $ref: "#/components/schemas/UserEvaluationRegistered"
         400:
           description: "Invalid input"
+        403:
+          description: "Access Denied"
 
   /response/{query_id}/{debug}:
     get:
