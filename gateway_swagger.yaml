@@ -105,6 +105,8 @@ paths:
         The users can provide feedback of an analysis made on a tweet. For this,
         a label and optionally a URL can be sent.
       operationId: "evaluateTweet"
+      security:
+        - bearerAuth: []
       requestBody:
         description: "The evaluation data"
         required: true
