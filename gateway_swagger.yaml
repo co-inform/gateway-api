@@ -221,20 +221,19 @@ components:
       type: "string"
       enum:
         - "credible"
-        - "mostly credible"
-        - "credibility uncertain"
-        - "mostly not credible"
-        - "not credible"
-        - "not verifiable"
+        - "mostly_credible"
+        - "credibility_uncertain"
+        - "mostly_not_credible"
+        - "not_credible"
+        - "not_verifiable"
     AccuracyLabel:
       type: "string"
       enum:
         - "accurate"
-        - "accurate with considerations"
+        - "accurate_with_considerations"
         - "unsubstantiated"
-        - "inaccurate with considerations"
+        - "inaccurate_with_considerations"
         - "inaccurate"
-        - "not verifiable"
     TwitterUser:
       type: "object"
       properties:
