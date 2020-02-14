@@ -16,18 +16,19 @@ paths:
       summary: "Login a Plugin user"
       description: "Logs a Plugin user in to the platform"
       requestBody:
-        description:
-          required: true
-          content:
-            application/json:
-              schema:
-                $ref: "#components/schemas/CoinformLoginUser"
+        description: "The user and password"
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CoinformLoginUser"
       responses:
         200:
           description: "User sucesfully logged in"
           content:
             application/json:
-              $ref: "#components/schemas/AuthToken"
+              schema:
+                $ref: "#/components/schemas/AuthToken"
         404:
           description: "No such user registered with CoInform"
   /register:
@@ -37,12 +38,12 @@ paths:
       summary: "Register a new Plugin user"
       description: "Registers a plugin user with the platform"
       requestBody:
-        description:
-          required: true
-          content:
-            application/json:
-              schema:
-                $ref: "#components/schemas/CoinformRegisterUser"
+        description: "The registration data"
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CoinformRegisterUser"
       responses:
         201:
           description: "New CoInform user successfully created"
@@ -110,6 +111,8 @@ paths:
         The users can provide feedback of an analysis made on a tweet. For this,
         a label and optionally a URL can be sent.
       operationId: "evaluateTweet"
+      security:
+        - bearerAuth: []
       requestBody:
         description: "The evaluation data"
         required: true
@@ -126,6 +129,8 @@ paths:
                 $ref: "#/components/schemas/UserEvaluationRegistered"
         400:
           description: "Invalid input"
+        403:
+          description: "Access Denied"
 
   /response/{query_id}/{debug}:
     get:
@@ -156,6 +161,29 @@ paths:
                 $ref: "#/components/schemas/QueryResponse"
         404:
           description: "no such query_id"
+  /ruleengine/test:
+    post:
+      tags:
+        - "Browser Plugin"
+      summary: "Test the rule engine"
+      description: "Get the response from the rule engine for a set of test values"
+      operationId: "ruleEngineTest"
+      requestBody:
+        description: "rule engine test values"
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/RuleEngineTestInput"
+      responses:
+        200:
+          description: "ok"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/RuleEngineOutput"
+        400:
+          description: "not valid input"
   /module/response/{transaction_id}:
     post:
       tags:
@@ -199,20 +227,19 @@ components:
       type: "string"
       enum:
         - "credible"
-        - "mostly credible"
-        - "credibility uncertain"
-        - "mostly not credible"
-        - "not credible"
-        - "not verifiable"
+        - "mostly_credible"
+        - "credibility_uncertain"
+        - "mostly_not_credible"
+        - "not_credible"
+        - "not_verifiable"
     AccuracyLabel:
       type: "string"
       enum:
         - "accurate"
-        - "accurate with considerations"
+        - "accurate_with_considerations"
         - "unsubstantiated"
-        - "inaccurate with considerations"
+        - "inaccurate_with_considerations"
         - "inaccurate"
-        - "not verifiable"
     TwitterUser:
       type: "object"
       properties:
@@ -271,6 +298,36 @@ components:
       properties:
         final_credibility:
           $ref: "#/components/schemas/CredibilityLabel"
+    RuleEngineTestInput:
+      type: "object"
+      properties:
+        misinfome:
+          type: "object"
+          properties:
+            cred:
+              type: "number"
+              format: "float"
+            conf:
+              type: "number"
+              format: "float"
+        stance:
+          type: "object"
+          properties:
+            cred:
+              type: "number"
+              format: "float"
+            conf:
+              type: "number"
+              format: "float"
+        claim_credibility:
+          type: "object"
+          properties:
+            cred:
+              type: "number"
+              format: "float"
+            conf:
+              type: "number"
+              format: "float"
     ModuleResponse:
       type: "object"
       properties:
