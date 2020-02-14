@@ -49,12 +49,12 @@ paths:
           description: "New CoInform user successfully created"
           content:
             application/json:
-              $ref: "#components/schemas/StatusResponse"
+              $ref: "#/components/schemas/StatusResponse"
         400:
           description: "SOmething went horribly wrong"
           content:
             application/json:
-              $ref: "#components/schemas/StatusResponse"
+              $ref: "#/components/schemas/StatusResponse"
   /twitter/user:
     post:
       tags:
@@ -352,7 +352,7 @@ components:
       properties:
         token:
           type: "string"
-    StatusToken:
+    StatusResponse:
       type: "object"
       properties:
         status:
