@@ -47,8 +47,14 @@ paths:
       responses:
         201:
           description: "New CoInform user successfully created"
+          content:
+            application/json:
+              $ref: "#/components/schemas/SuccesfullResponse"
         400:
           description: "SOmething went horribly wrong"
+          content:
+            application/json:
+              $ref: "#/components/schemas/ErrorResponse"
   /twitter/user:
     post:
       tags:
@@ -345,6 +351,16 @@ components:
       type: "object"
       properties:
         token:
+          type: "string"
+    SuccesfullResponse:
+      type: "object"
+      properties:
+        status:
+          type: "string"
+    ErrorResponse:
+      type: "object"
+      properties:
+        error:
           type: "string"
   securitySchemes:
     bearerAuth:
