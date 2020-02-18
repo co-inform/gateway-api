@@ -29,6 +29,8 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/AuthToken"
+        401:
+          description: "Not authorized. User has most likely not verified its email address"
         404:
           description: "No such user registered with CoInform"
   /register:
