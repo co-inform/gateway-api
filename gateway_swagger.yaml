@@ -51,13 +51,13 @@ paths:
           description: "New CoInform user successfully created"
           content:
             application/json:
-              $schema:
+              schema:
                 $ref: "#/components/schemas/SuccesfullResponse"
         400:
           description: "SOmething went horribly wrong"
           content:
             application/json:
-              $schema:
+              schema:
                 $ref: "#/components/schemas/ErrorResponse"
   /twitter/user:
     post:
