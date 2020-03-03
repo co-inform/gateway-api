@@ -30,9 +30,7 @@ paths:
               schema:
                 $ref: "#/components/schemas/AuthToken"
         401:
-          description: "Not authorized. User has most likely not verified its email address"
-        404:
-          description: "No such user registered with CoInform"
+          description: "Not authorized. User is either not registered or have not verified its email."
   /register:
     post:
       tags:
@@ -53,10 +51,24 @@ paths:
             application/json:
               $ref: "#/components/schemas/SuccesfullResponse"
         400:
-          description: "SOmething went horribly wrong"
+          description: "Something went horribly wrong"
           content:
             application/json:
               $ref: "#/components/schemas/ErrorResponse"
+  /exit:
+    get:
+      tags:
+        - "Browser plugin"
+      summary: "To log out a logged in user"
+      description: "Logs out a user logged in to the coinform system"
+      responses:
+        200:
+          description: "Coinform user successfully logged out"
+          content:
+            application/json:
+              $ref: "#/components/schemas/SuccesfullResponse"
+        401:
+          description: "Coinform user could not be logged out (probably already is...)"
   /twitter/user:
     post:
       tags:
@@ -335,6 +347,11 @@ components:
       properties:
         response:
           type: "object"
+    User:
+      type: "object"
+      properties:
+        email:
+          type: "string"
     CoinformLoginUser:
       type: "object"
       properties:
