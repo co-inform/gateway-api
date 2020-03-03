@@ -29,6 +29,8 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/AuthToken"
+        401:
+          description: "Not authorized. User has most likely not verified its email address"
         404:
           description: "No such user registered with CoInform"
   /register:
@@ -47,8 +49,16 @@ paths:
       responses:
         201:
           description: "New CoInform user successfully created"
+          content:
+            application/json:
+              $schema:
+                $ref: "#/components/schemas/SuccesfullResponse"
         400:
           description: "SOmething went horribly wrong"
+          content:
+            application/json:
+              $schema:
+                $ref: "#/components/schemas/ErrorResponse"
   /twitter/user:
     post:
       tags:
@@ -100,10 +110,9 @@ paths:
     post:
       tags:
         - "Browser Plugin"
-      summary: "Send a user-provided tweet evaluation"
+      summary: "Give a accuracy review from a user"
       description: |
-        The users can provide feedback of an analysis made on a tweet. For this,
-        a label and optionally a URL can be sent.
+        Provide the Co-Inform platform with a accuracy review where a user have given a tweet a accuracy label, and a url to a source supporting this label.
       operationId: "evaluateTweet"
       security:
         - bearerAuth: []
@@ -126,6 +135,29 @@ paths:
         403:
           description: "Access Denied"
 
+  /twitter/evaluate/label:
+    post:
+      tags:
+        - "to be developed"
+      summary: "Give a reaction to the assigned label"
+      description: |
+        Provide a reaction to the Co-Inform platform credibility label assigned to the tweet.
+      security:
+        - bearerAuth: []
+      requestBody:
+        description: "The reaction"
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/UserLabelEvaluation"
+      responses:
+        201:
+          description: "reaction registrated"
+        400:
+          description: "Invalid input"
+        403:
+          description: "Access Denied"
   /response/{query_id}/{debug}:
     get:
       tags:
@@ -222,7 +254,6 @@ components:
       enum:
         - "credible"
         - "mostly_credible"
-        - "credibility_uncertain"
         - "mostly_not_credible"
         - "not_credible"
         - "not_verifiable"
@@ -273,6 +304,18 @@ components:
       properties:
         evaluation_id:
           type: "string"
+    UserLabelEvaluation:
+      type: "object"
+      properties:
+        tweet_id:
+          type: "string"
+        reaction:
+          $ref: "#/components/schemas/UserLabelReaction"
+    UserLabelReaction:
+      type: "string"
+      enum:
+        - "agree"
+        - "disagree"
     QueryResponse:
       type: "object"
       properties:
@@ -345,6 +388,16 @@ components:
       type: "object"
       properties:
         token:
+          type: "string"
+    SuccesfullResponse:
+      type: "object"
+      properties:
+        status:
+          type: "string"
+    ErrorResponse:
+      type: "object"
+      properties:
+        error:
           type: "string"
   securitySchemes:
     bearerAuth:
