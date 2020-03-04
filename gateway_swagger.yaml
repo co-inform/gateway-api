@@ -55,6 +55,36 @@ paths:
           content:
             application/json:
               $ref: "#/components/schemas/ErrorResponse"
+  /change-password:
+    post:
+      tags:
+        - "Browser Plugin"
+      summary: "Change password"
+      description: "Allows for a logged in CoInform user to change its password"
+      requestBody:
+        description: "The body of the request containing the new and old password"
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ChangePassword"
+      responses:
+        200:
+          description: "Successfully changed the password for the user"
+          content:
+            application/json:
+              $ref: "#/components/schemas/SuccesfullResponse"
+        401:
+          description: "Failed attempt to change password. User not logged in"
+          content:
+            application/json:
+              $ref: "#/components/schemas/ErrorResponse"
+        403:
+          description: "Failed attempt to change password. Old password did not match stored password"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
   /exit:
     get:
       tags:
@@ -380,6 +410,13 @@ components:
       type: "object"
       properties:
         error:
+          type: "string"
+    ChangePassword:
+      type: "object"
+      properties:
+        oldPassword:
+          type: "string"
+        newPassword:
           type: "string"
   securitySchemes:
     bearerAuth:
