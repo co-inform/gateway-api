@@ -58,6 +58,32 @@ paths:
           content:
             application/json:
               $ref: "#/components/schemas/ErrorResponse"
+  /reset-password:
+    post:
+      tags:
+        - "Browser Plugin"
+      summary: "Password reset endpoint"
+      description: "Allows a CoInform user who forgot its password to reset it"
+      requestBody:
+        description: "A JSON Object holding the users email"
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schema/User"
+      responses:
+        200:
+          description: "User has successfully asked for a password reset."
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SuccesfullResponse"
+        400:
+          description: "User could not be found"
+            content:
+              application/json:
+                schema:
+                  $ref: "#/components/schemas/ErrorResponse"
   /change-password:
     post:
       tags:
