@@ -64,6 +64,8 @@ paths:
         - "Browser Plugin"
       summary: "Change password"
       description: "Allows for a logged in CoInform user to change its password"
+      security:
+        - bearerAuth: []
       requestBody:
         description: "The body of the request containing the new and old password"
         required: true
@@ -94,6 +96,8 @@ paths:
         - "Browser plugin"
       summary: "To log out a logged in user"
       description: "Logs out a user logged in to the coinform system"
+      security:
+        - bearerAuth: []
       responses:
         200:
           description: "Coinform user successfully logged out"
