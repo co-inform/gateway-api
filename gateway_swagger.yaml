@@ -57,7 +57,8 @@ paths:
           description: "Something went horribly wrong"
           content:
             application/json:
-              $ref: "#/components/schemas/ErrorResponse"
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
   /reset-password:
     post:
       tags:
@@ -70,7 +71,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: "#/components/schema/User"
+              $ref: "#/components/schemas/User"
       responses:
         200:
           description: "User has successfully asked for a password reset."
@@ -80,10 +81,10 @@ paths:
                 $ref: "#/components/schemas/SuccesfullResponse"
         400:
           description: "User could not be found"
-            content:
-              application/json:
-                schema:
-                  $ref: "#/components/schemas/ErrorResponse"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
   /change-password:
     post:
       tags:
@@ -104,12 +105,14 @@ paths:
           description: "Successfully changed the password for the user"
           content:
             application/json:
-              $ref: "#/components/schemas/SuccesfullResponse"
+              schema:
+                $ref: "#/components/schemas/SuccesfullResponse"
         401:
           description: "Failed attempt to change password. User not logged in"
           content:
             application/json:
-              $ref: "#/components/schemas/ErrorResponse"
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
         403:
           description: "Failed attempt to change password. Old password did not match stored password"
           content:
@@ -129,7 +132,8 @@ paths:
           description: "Coinform user successfully logged out"
           content:
             application/json:
-              $ref: "#/components/schemas/SuccesfullResponse"
+              schema:
+                $ref: "#/components/schemas/SuccesfullResponse"
         401:
           description: "Coinform user could not be logged out (probably already is...)"
   /twitter/user:
