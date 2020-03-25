@@ -280,6 +280,7 @@ paths:
       - name: "debug"
         in: "path"
         description: "A string (can be anything, except empty) debug information"
+        required: true
         schema:
             type: "string"
       responses:
@@ -439,6 +440,8 @@ components:
       properties:
         final_credibility:
           $ref: "#/components/schemas/CredibilityLabel"
+        module_values:
+          $ref: "#/components/schemas/ModuleValues"
     RuleEngineTestInput:
       type: "object"
       properties:
@@ -469,6 +472,24 @@ components:
             conf:
               type: "number"
               format: "float"
+    ModuleValues:
+      type: "object"
+      properties:
+        misinfome:
+          $ref: "#/components/schemas/Values"
+        content_analysis:
+          $ref: "#/components/schemas/Values"
+        claim_similarity:
+          $ref: "#/components/schemas/Values"
+    Values:
+      type: "object"
+      properties:
+        confidence:
+          type: "number"
+          format: "float"
+        credibility:
+          type: "number"
+          format: "float"
     ModuleResponse:
       type: "object"
       properties:
