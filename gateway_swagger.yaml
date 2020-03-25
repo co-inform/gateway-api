@@ -29,6 +29,11 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/AuthToken"
+          headers:
+            Set-Cookie:
+              schema:
+                type: "string"
+                example: "renew-token=öajhsfg7897w3r5h3r; Path=/; HttpOnly; Secure"
         401:
           description: "Not authorized. User is either not verified or supplied an incorrect password"
         404:
@@ -85,6 +90,29 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/ErrorResponse"
+  /renew-token:
+    get:
+      tags:
+        - "Browser Plugin"
+      summary: "Renew the authentication token"
+      description: "For the Browser Plugin to allow longlived sessions"
+      parameters:
+        - in: "cookie"
+          name: "renew-token"
+          schema:
+            type: "string"
+          required: true
+      security:
+        - cookieAuth: []
+      responses:
+        200:
+          description: "Successfully requested a new JWT token"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AuthToken"
+        404:
+          description: "No such user/cookie found"
   /change-password:
     post:
       tags:
@@ -252,7 +280,6 @@ paths:
       - name: "debug"
         in: "path"
         description: "A string (can be anything, except empty) debug information"
-        required: false
         schema:
             type: "string"
       responses:
@@ -493,4 +520,8 @@ components:
       type: "http"
       scheme: "bearer"
       bearerFormat: "JWT"
+    cookieAuth:
+      type: "apiKey"
+      in: "cookie"
+      name: "renew-token"
 
