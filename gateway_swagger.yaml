@@ -414,6 +414,16 @@ components:
       properties:
         tweet_id:
           type: "string"
+          example: "123479208745723476"
+        rated_credibility:
+          type: "string"
+          example: "not_credible"
+        rated_moduleResponse:
+          type: "string"
+          example: "2546jv37lj86c3v5678m454c84g7c8487cn478cn485hk6dg4848d4ghg478d478ggn48"
+        url:
+          type: "string"
+          example: "https://twitter.com/realDonaldTrump/status/123479208745723476"
         reaction:
           $ref: "#/components/schemas/UserLabelReaction"
     UserLabelReaction:
