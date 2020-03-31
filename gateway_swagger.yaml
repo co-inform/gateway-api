@@ -393,8 +393,22 @@ components:
       properties:
         tweet_id:
           type: "string"
-        evaluation:
-          $ref: "#/components/schemas/UserEvaluation"
+          example: "123479208745723476"
+        comment:
+          type: "string"
+          example: "some comment the user makes about the evaluation"
+        rating:
+          $ref: "#/components/schemas/AccuracyLabel"
+        supportingUrl:
+          type: "array"
+          items:
+            type: "object"
+            properties:
+              url:
+                type: "string"
+        url:
+          type: "string"
+          example: "https://twitter.com/realDonaldTrump/status/123479208745723476"
     UserEvaluation:
       type: "object"
       properties:
