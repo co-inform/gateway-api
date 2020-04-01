@@ -29,8 +29,13 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/AuthToken"
+          headers:
+            Set-Cookie:
+              schema:
+                type: "string"
+                example: "renew-token=öajhsfg7897w3r5h3r; Path=/; HttpOnly; Secure"
         401:
-          description: "Not authorized. User has most likely not verified its email address"
+          description: "Not authorized. User is either not verified or supplied an incorrect password"
         404:
           description: "No such user registered with CoInform"
   /register:
@@ -54,11 +59,111 @@ paths:
               schema:
                 $ref: "#/components/schemas/SuccesfullResponse"
         400:
-          description: "SOmething went horribly wrong"
+          description: "Something went horribly wrong"
           content:
             application/json:
               schema:
                 $ref: "#/components/schemas/ErrorResponse"
+  /reset-password:
+    post:
+      tags:
+        - "Browser Plugin"
+      summary: "Password reset endpoint"
+      description: "Allows a CoInform user who forgot its password to reset it"
+      requestBody:
+        description: "A JSON Object holding the users email"
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/User"
+      responses:
+        200:
+          description: "User has successfully asked for a password reset."
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SuccesfullResponse"
+        400:
+          description: "User could not be found"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+  /renew-token:
+    get:
+      tags:
+        - "Browser Plugin"
+      summary: "Renew the authentication token"
+      description: "For the Browser Plugin to allow longlived sessions"
+      parameters:
+        - in: "cookie"
+          name: "renew-token"
+          schema:
+            type: "string"
+          required: true
+      security:
+        - cookieAuth: []
+      responses:
+        200:
+          description: "Successfully requested a new JWT token"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AuthToken"
+        404:
+          description: "No such user/cookie found"
+  /change-password:
+    post:
+      tags:
+        - "Browser Plugin"
+      summary: "Change password"
+      description: "Allows for a logged in CoInform user to change its password"
+      security:
+        - bearerAuth: []
+      requestBody:
+        description: "The body of the request containing the new and old password"
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ChangePassword"
+      responses:
+        200:
+          description: "Successfully changed the password for the user"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SuccesfullResponse"
+        401:
+          description: "Failed attempt to change password. User not logged in"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        403:
+          description: "Failed attempt to change password. Old password did not match stored password"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+  /exit:
+    get:
+      tags:
+        - "Browser Plugin"
+      summary: "To log out a logged in user"
+      description: "Logs out a user logged in to the coinform system"
+      security:
+        - bearerAuth: []
+      responses:
+        200:
+          description: "Coinform user successfully logged out"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SuccesfullResponse"
+        401:
+          description: "Coinform user could not be logged out (probably already is...)"
   /twitter/user:
     post:
       tags:
@@ -175,7 +280,7 @@ paths:
       - name: "debug"
         in: "path"
         description: "A string (can be anything, except empty) debug information"
-        required: false
+        required: true
         schema:
             type: "string"
       responses:
@@ -288,8 +393,22 @@ components:
       properties:
         tweet_id:
           type: "string"
-        evaluation:
-          $ref: "#/components/schemas/UserEvaluation"
+          example: "123479208745723476"
+        comment:
+          type: "string"
+          example: "some comment the user makes about the evaluation"
+        rating:
+          $ref: "#/components/schemas/AccuracyLabel"
+        supportingUrl:
+          type: "array"
+          items:
+            type: "object"
+            properties:
+              url:
+                type: "string"
+        url:
+          type: "string"
+          example: "https://twitter.com/realDonaldTrump/status/123479208745723476"
     UserEvaluation:
       type: "object"
       properties:
@@ -309,6 +428,16 @@ components:
       properties:
         tweet_id:
           type: "string"
+          example: "123479208745723476"
+        rated_credibility:
+          type: "string"
+          example: "not_credible"
+        rated_moduleResponse:
+          type: "string"
+          example: "2546jv37lj86c3v5678m454c84g7c8487cn478cn485hk6dg4848d4ghg478d478ggn48"
+        url:
+          type: "string"
+          example: "https://twitter.com/realDonaldTrump/status/123479208745723476"
         reaction:
           $ref: "#/components/schemas/UserLabelReaction"
     UserLabelReaction:
@@ -335,6 +464,8 @@ components:
       properties:
         final_credibility:
           $ref: "#/components/schemas/CredibilityLabel"
+        module_values:
+          $ref: "#/components/schemas/ModuleValues"
     RuleEngineTestInput:
       type: "object"
       properties:
@@ -365,11 +496,34 @@ components:
             conf:
               type: "number"
               format: "float"
+    ModuleValues:
+      type: "object"
+      properties:
+        misinfome:
+          $ref: "#/components/schemas/Values"
+        content_analysis:
+          $ref: "#/components/schemas/Values"
+        claim_similarity:
+          $ref: "#/components/schemas/Values"
+    Values:
+      type: "object"
+      properties:
+        confidence:
+          type: "number"
+          format: "float"
+        credibility:
+          type: "number"
+          format: "float"
     ModuleResponse:
       type: "object"
       properties:
         response:
           type: "object"
+    User:
+      type: "object"
+      properties:
+        email:
+          type: "string"
     CoinformLoginUser:
       type: "object"
       properties:
@@ -399,9 +553,20 @@ components:
       properties:
         error:
           type: "string"
+    ChangePassword:
+      type: "object"
+      properties:
+        oldPassword:
+          type: "string"
+        newPassword:
+          type: "string"
   securitySchemes:
     bearerAuth:
       type: "http"
       scheme: "bearer"
       bearerFormat: "JWT"
+    cookieAuth:
+      type: "apiKey"
+      in: "cookie"
+      name: "renew-token"
 
