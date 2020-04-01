@@ -402,10 +402,8 @@ components:
         supportingUrl:
           type: "array"
           items:
-            type: "object"
-            properties:
-              url:
-                type: "string"
+            type: "string"
+            example: "https://www.som-site.com/with-a-supporting-text"
         url:
           type: "string"
           example: "https://twitter.com/realDonaldTrump/status/123479208745723476"
