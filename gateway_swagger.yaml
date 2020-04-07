@@ -1,3 +1,4 @@
+
 openapi: "3.0.0"
 servers:
   - url: https://api.coinform.eu/
@@ -239,11 +240,37 @@ paths:
           description: "Invalid input"
         403:
           description: "Access Denied"
-
+  /check-url:
+    get:
+      tags:
+        - "Browser Plugin"
+      summary: "Check a url for misinformativ content"
+      description: |
+        Provide a URL to the CoInform system to control for a user before a post is made
+      parameters:
+      - name: "source"
+        in: "path"
+        description: "the url to be checked"
+        required: true
+        schema:
+          type: "string"
+      responses:
+        200:
+          description: "the content from the module"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/CheckUrl"
+        400:
+          description: "Something went wrong with the request"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
   /twitter/evaluate/label:
     post:
       tags:
-        - "to be developed"
+        - "Browser Plugin"
       summary: "Give a reaction to the assigned label"
       description: |
         Provide a reaction to the Co-Inform platform credibility label assigned to the tweet.
@@ -558,6 +585,27 @@ components:
           type: "string"
         newPassword:
           type: "string"
+    CheckUrl:
+      type: "object"
+      properties:
+        credibility:
+          type: "object"
+          properties:
+            value:
+              type: "number"
+              format: "float"
+            confidence:
+              type: "number"
+              format: "float"
+        assesments:
+          type: "array"
+          items:
+            type: "object"
+            description: "the different assesments made by the module"
+        item_reviewed:
+          type: "string"
+          example: "https://www.breitbart.com/clips/2020/04/05/stephen-moore-on-coronavirus-impact-we-are-facing-a-potential-great-depression-scenario/"
+
   securitySchemes:
     bearerAuth:
       type: "http"
