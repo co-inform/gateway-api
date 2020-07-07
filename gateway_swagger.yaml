@@ -248,7 +248,7 @@ paths:
         Provide a URL to the CoInform system to control for a user before a post is made
       parameters:
       - name: "source"
-        in: "path"
+        in: "query"
         description: "the url to be checked"
         required: true
         schema:
@@ -510,6 +510,8 @@ components:
           $ref: "#/components/schemas/CredibilityLabel"
         module_values:
           $ref: "#/components/schemas/ModuleValues"
+        module_explanations:
+          $ref: "#/components/schemas/ModuleExplanations"
     RuleEngineTestInput:
       type: "object"
       properties:
@@ -558,6 +560,26 @@ components:
         credibility:
           type: "number"
           format: "float"
+    ModuleExplanations:
+      type: "object"
+      properties:
+        misinfome:
+          $ref: "#/components/schemas/Explanation"
+        content_analysis:
+          $ref: "#/components/schemas/Explanation"
+        claim_similarity:
+          $ref: "#/components/schemas/Explanation"
+    Explanation:
+      type: "object"
+      properties:
+        explanation_format:
+          type: "string"
+          enum:
+            - "markdown"
+            - "link"
+            - "text"
+        explanation:
+          type: "string"
     ModuleResponse:
       type: "object"
       properties:
