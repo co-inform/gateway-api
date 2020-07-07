@@ -29,8 +29,13 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/AuthToken"
+          headers:
+            Set-Cookie:
+              schema:
+                type: "string"
+                example: "renew-token=öajhsfg7897w3r5h3r; Path=/; HttpOnly; Secure"
         401:
-          description: "Not authorized. User has most likely not verified its email address"
+          description: "Not authorized. User is either not verified or supplied an incorrect password"
         404:
           description: "No such user registered with CoInform"
   /register:
@@ -54,11 +59,111 @@ paths:
               schema:
                 $ref: "#/components/schemas/SuccesfullResponse"
         400:
-          description: "SOmething went horribly wrong"
+          description: "Something went horribly wrong"
           content:
             application/json:
               schema:
                 $ref: "#/components/schemas/ErrorResponse"
+  /reset-password:
+    post:
+      tags:
+        - "Browser Plugin"
+      summary: "Password reset endpoint"
+      description: "Allows a CoInform user who forgot its password to reset it"
+      requestBody:
+        description: "A JSON Object holding the users email"
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/User"
+      responses:
+        200:
+          description: "User has successfully asked for a password reset."
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SuccesfullResponse"
+        400:
+          description: "User could not be found"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+  /renew-token:
+    get:
+      tags:
+        - "Browser Plugin"
+      summary: "Renew the authentication token"
+      description: "For the Browser Plugin to allow longlived sessions"
+      parameters:
+        - in: "cookie"
+          name: "renew-token"
+          schema:
+            type: "string"
+          required: true
+      security:
+        - cookieAuth: []
+      responses:
+        200:
+          description: "Successfully requested a new JWT token"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AuthToken"
+        404:
+          description: "No such user/cookie found"
+  /change-password:
+    post:
+      tags:
+        - "Browser Plugin"
+      summary: "Change password"
+      description: "Allows for a logged in CoInform user to change its password"
+      security:
+        - bearerAuth: []
+      requestBody:
+        description: "The body of the request containing the new and old password"
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ChangePassword"
+      responses:
+        200:
+          description: "Successfully changed the password for the user"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SuccesfullResponse"
+        401:
+          description: "Failed attempt to change password. User not logged in"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        403:
+          description: "Failed attempt to change password. Old password did not match stored password"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+  /exit:
+    get:
+      tags:
+        - "Browser Plugin"
+      summary: "To log out a logged in user"
+      description: "Logs out a user logged in to the coinform system"
+      security:
+        - bearerAuth: []
+      responses:
+        200:
+          description: "Coinform user successfully logged out"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SuccesfullResponse"
+        401:
+          description: "Coinform user could not be logged out (probably already is...)"
   /twitter/user:
     post:
       tags:
@@ -129,16 +234,42 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/UserEvaluationRegistered"
+                $ref: "#/components/schemas/SuccesfullResponse"
         400:
           description: "Invalid input"
         403:
           description: "Access Denied"
-
+  /check-url:
+    get:
+      tags:
+        - "Browser Plugin"
+      summary: "Check a url for misinformativ content"
+      description: |
+        Provide a URL to the CoInform system to control for a user before a post is made
+      parameters:
+      - name: "source"
+        in: "query"
+        description: "the url to be checked"
+        required: true
+        schema:
+          type: "string"
+      responses:
+        200:
+          description: "the content from the module"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/CheckUrl"
+        400:
+          description: "Something went wrong with the request"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
   /twitter/evaluate/label:
     post:
       tags:
-        - "to be developed"
+        - "Browser Plugin"
       summary: "Give a reaction to the assigned label"
       description: |
         Provide a reaction to the Co-Inform platform credibility label assigned to the tweet.
@@ -175,7 +306,7 @@ paths:
       - name: "debug"
         in: "path"
         description: "A string (can be anything, except empty) debug information"
-        required: false
+        required: true
         schema:
             type: "string"
       responses:
@@ -239,6 +370,26 @@ paths:
           description: "Bad request, malformed JSON"
         404:
           description: "no such transaction_id"
+  /external/evaluation:
+    post:
+      tags:
+      - "draft"
+      summary: "recieve a review from an external source"
+      description: "recive a review from an external source"
+      requestBody:
+        description: "A review rating"
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/Review"
+      responses:
+        200:
+          description: "successful operation"
+        401:
+          description: "unauthorized operation"
+        400:
+          description: "Bad request, malformed JSON"
 components:
   schemas:
     QueryId:
@@ -288,8 +439,20 @@ components:
       properties:
         tweet_id:
           type: "string"
-        evaluation:
-          $ref: "#/components/schemas/UserEvaluation"
+          example: "123479208745723476"
+        comment:
+          type: "string"
+          example: "some comment the user makes about the evaluation"
+        rating:
+          $ref: "#/components/schemas/AccuracyLabel"
+        supportingUrl:
+          type: "array"
+          items:
+            type: "string"
+            example: "https://www.som-site.com/with-a-supporting-text"
+        url:
+          type: "string"
+          example: "https://twitter.com/realDonaldTrump/status/123479208745723476"
     UserEvaluation:
       type: "object"
       properties:
@@ -309,6 +472,16 @@ components:
       properties:
         tweet_id:
           type: "string"
+          example: "123479208745723476"
+        rated_credibility:
+          type: "string"
+          example: "not_credible"
+        rated_moduleResponse:
+          type: "string"
+          example: "2546jv37lj86c3v5678m454c84g7c8487cn478cn485hk6dg4848d4ghg478d478ggn48"
+        url:
+          type: "string"
+          example: "https://twitter.com/realDonaldTrump/status/123479208745723476"
         reaction:
           $ref: "#/components/schemas/UserLabelReaction"
     UserLabelReaction:
@@ -335,6 +508,10 @@ components:
       properties:
         final_credibility:
           $ref: "#/components/schemas/CredibilityLabel"
+        module_values:
+          $ref: "#/components/schemas/ModuleValues"
+        module_explanations:
+          $ref: "#/components/schemas/ModuleExplanations"
     RuleEngineTestInput:
       type: "object"
       properties:
@@ -365,11 +542,54 @@ components:
             conf:
               type: "number"
               format: "float"
+    ModuleValues:
+      type: "object"
+      properties:
+        misinfome:
+          $ref: "#/components/schemas/Values"
+        content_analysis:
+          $ref: "#/components/schemas/Values"
+        claim_similarity:
+          $ref: "#/components/schemas/Values"
+    Values:
+      type: "object"
+      properties:
+        confidence:
+          type: "number"
+          format: "float"
+        credibility:
+          type: "number"
+          format: "float"
+    ModuleExplanations:
+      type: "object"
+      properties:
+        misinfome:
+          $ref: "#/components/schemas/Explanation"
+        content_analysis:
+          $ref: "#/components/schemas/Explanation"
+        claim_similarity:
+          $ref: "#/components/schemas/Explanation"
+    Explanation:
+      type: "object"
+      properties:
+        explanation_format:
+          type: "string"
+          enum:
+            - "markdown"
+            - "link"
+            - "text"
+        explanation:
+          type: "string"
     ModuleResponse:
       type: "object"
       properties:
         response:
           type: "object"
+    User:
+      type: "object"
+      properties:
+        email:
+          type: "string"
     CoinformLoginUser:
       type: "object"
       properties:
@@ -399,9 +619,118 @@ components:
       properties:
         error:
           type: "string"
+    ChangePassword:
+      type: "object"
+      properties:
+        oldPassword:
+          type: "string"
+        newPassword:
+          type: "string"
+    CheckUrl:
+      type: "object"
+      properties:
+        credibility:
+          type: "object"
+          properties:
+            value:
+              type: "number"
+              format: "float"
+            confidence:
+              type: "number"
+              format: "float"
+        assesments:
+          type: "array"
+          items:
+            type: "object"
+            description: "the different assesments made by the module"
+        item_reviewed:
+          type: "string"
+          example: "https://www.breitbart.com/clips/2020/04/05/stephen-moore-on-coronavirus-impact-we-are-facing-a-potential-great-depression-scenario/"
+    Review:
+      type: "object"
+      properties:
+        context:
+          type: "string"
+          example: "http://schema.org"
+        type:
+          type: "string"
+          example: "Review"
+        url:
+          type: "string"
+          example: "http://truly.media/path/to/resource/for/this/review?"
+        author:
+          $ref: "#/components/schemas/Author"
+        text:
+          type: "string"
+          example: "The Tweet is accurate/inaccurate because ..."
+        name:
+          type: "string"
+          example: "accurate"
+        reviewAspect:
+          type: string
+          example: "accuracy"
+        reviewRating:
+          $ref: "#/components/schemas/ReviewRating"
+        itemReviewed:
+          $ref: "#/components/schemas/ItemReviewed"
+        dateCreated:
+          type: string
+          format: date-time
+          example: "2020-05-08T10:16:29.130Z"
+    Author:
+      type: object
+      properties:
+        type:
+          type: string
+          example: "Organization"
+        url:
+          type: string
+          example: "http://truly.media"
+        name:
+          type: string
+          example: "Truly-media"
+        comment:
+          type: string
+          example: "Alternatively, this can be information about the Person or fact-checker Organization that used the SOMA platform"
+    ReviewRating:
+      type: object
+      properties:
+        context:
+          type: string
+          example: "http://schema.org"
+        type:
+          type: string
+          example: "Rating"
+        ratingValue:
+          type: string
+          example: "accurate"
+        possibleRatingValues:
+          type: array
+          items:
+            type: string
+          example: ["accurate", "mostly accurate", "mostly inaccurate", "inaccurate", "not verifiable"]
+        reviewAspect:
+          type: string
+          example: "accuracy"
+        reviewExplanation:
+          type: string
+    ItemReviewed:
+      type: object
+      properties:
+        type:
+          type: string
+          example: SocialMediaPost
+        url:
+          type: string
+          example: "https://twitter.com/ifrc/status/1258685075694256129"
+
   securitySchemes:
     bearerAuth:
       type: "http"
       scheme: "bearer"
       bearerFormat: "JWT"
+    cookieAuth:
+      type: "apiKey"
+      in: "cookie"
+      name: "renew-token"
 
