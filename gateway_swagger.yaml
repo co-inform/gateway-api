@@ -453,6 +453,9 @@ components:
         url:
           type: "string"
           example: "https://twitter.com/realDonaldTrump/status/123479208745723476"
+        request_factcheck:
+          type: "boolean"
+          example: true
     UserEvaluation:
       type: "object"
       properties:
