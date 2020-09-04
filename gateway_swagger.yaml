@@ -45,8 +45,8 @@ paths:
       summary: "Register a new Plugin user"
       description: "Registers a plugin user with the platform"
       requestBody:
-        description: "The registration data"
         required: true
+        description: "The registration data"
         content:
           application/json:
             schema:
@@ -266,7 +266,7 @@ paths:
           description: "Invalid input"
         403:
           description: "Access Denied"
-  /check-url:
+  /check-url/{source}:
     get:
       tags:
         - "Browser Plugin"
@@ -607,6 +607,9 @@ components:
           type: "string"
     CoinformRegisterUser:
       type: "object"
+      required:
+        - "email"
+        - "password"
       properties:
         email:
           type: "string"
