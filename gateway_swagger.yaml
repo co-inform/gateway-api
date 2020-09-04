@@ -147,6 +147,33 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/ErrorResponse"
+  /change-settings:
+    post:
+      tags:
+        - "Browser Plugin"
+      summary: "Change some settings for the user"
+      security:
+        - bearerAuth: []
+      requestBody:
+        description: "The body containing the new settings for the user"
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ChangeSettings"
+      responses:
+        200:
+          description: "Successfully changed the settings"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AuthToken"
+        401:
+          description: "Failed to change settings. User not logged in"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
   /exit:
     get:
       tags:
@@ -585,6 +612,10 @@ components:
           type: "string"
         password:
           type: "string"
+        research:
+          type: "boolean"
+        communication:
+          type: "boolean"
     AuthToken:
       type: "object"
       properties:
@@ -607,6 +638,13 @@ components:
           type: "string"
         newPassword:
           type: "string"
+    ChangeSettings:
+      type: "object"
+      properties:
+        research:
+          type: "boolean"
+        communication:
+          type: "boolean"
     CheckUrl:
       type: "object"
       properties:
