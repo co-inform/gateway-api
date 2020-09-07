@@ -354,6 +354,52 @@ paths:
                 $ref: "#/components/schemas/RuleEngineOutput"
         400:
           description: "not valid input"
+  /user/evaluation-log:
+    post:
+      tags:
+        - "Browser Plugin"
+      summary: "Post plugin evaluation logs"
+      description: "Post plugin evaluation logs"
+      operationId: "evaluationLog"
+      security:
+        - bearerAuth: []
+      requestBody:
+        description: "List of plugin evaluation logs"
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/EvaluationLog"
+      responses:
+        200:
+          description: "ok"
+        400:
+          description: "bad request"
+        403:
+          description: "Access Denied"
+  /user/change-settings:
+    post:
+      tags:
+        - "Browser Plugin"
+      summary: "Change account settings"
+      description: "Change account settings"
+      operationId: "changeSettings"
+      security:
+        - bearerAuth: []
+      requestBody:
+        description: "Account settings"
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/AccountSettings"
+      responses:
+        200:
+          description: "ok"
+        400:
+          description: "not valid input"
+        403:
+          description: "Access Denied"
   /module/response/{transaction_id}:
     post:
       tags:
@@ -615,11 +661,18 @@ components:
           type: "string"
     CoinformRegisterUser:
       type: "object"
+      required:
+        - email
+        - password
       properties:
         email:
           type: "string"
         password:
           type: "string"
+        research:
+          type: "boolean"
+        communication:
+          type: "boolean"
     AuthToken:
       type: "object"
       properties:
@@ -739,7 +792,39 @@ components:
         url:
           type: string
           example: "https://twitter.com/ifrc/status/1258685075694256129"
-
+    EvaluationLog:
+      type: object
+      required:
+        - log_time
+        - log_category
+        - log_action
+      properties:
+        log_time:
+          type: string
+          format: date-time
+          example: "2020-04-04T20:33:30.465Z"
+        log_category:
+          type: string
+          example: "log_test"
+        related_item_url:
+          type: string
+          format: url
+        related_item_data:
+          type: string
+          example: "Label: Not Credible"
+        log_action:
+          type: string
+          example: 'Clicked on "Why can''t I see this?" button'
+    AccountSettings:
+      type: object
+      required:
+        - research
+        - communication
+      properties:
+        research:
+          type: boolean
+        communication:
+          type: boolean
   securitySchemes:
     bearerAuth:
       type: "http"
