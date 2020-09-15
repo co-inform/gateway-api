@@ -22,6 +22,13 @@ paths:
           application/json:
             schema:
               $ref: "#/components/schemas/CoinformLoginUser"
+      parameters:
+        - name: plugin_version
+          description: Set the plugin version on the session
+          in: query
+          required: false
+          schema:
+            type: string
       responses:
         200:
           description: "User sucesfully logged in"
@@ -102,6 +109,12 @@ paths:
           schema:
             type: "string"
           required: true
+        - name: plugin_version
+          description: Set the plugin version on the session
+          in: query
+          required: false
+          schema:
+            type: string
       security:
         - cookieAuth: []
       responses:
@@ -275,7 +288,7 @@ paths:
         Provide a URL to the CoInform system to control for a user before a post is made
       parameters:
       - name: "source"
-        in: "path"
+        in: "query"
         description: "the url to be checked"
         required: true
         schema:
@@ -368,6 +381,52 @@ paths:
                 $ref: "#/components/schemas/RuleEngineOutput"
         400:
           description: "not valid input"
+  /user/evaluation-log:
+    post:
+      tags:
+        - "Browser Plugin"
+      summary: "Post plugin evaluation logs"
+      description: "Post plugin evaluation logs"
+      operationId: "evaluationLog"
+      security:
+        - bearerAuth: []
+      requestBody:
+        description: "List of plugin evaluation logs"
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/EvaluationLog"
+      responses:
+        200:
+          description: "ok"
+        400:
+          description: "bad request"
+        403:
+          description: "Access Denied"
+  /user/change-settings:
+    post:
+      tags:
+        - "Browser Plugin"
+      summary: "Change account settings"
+      description: "Change account settings"
+      operationId: "changeSettings"
+      security:
+        - bearerAuth: []
+      requestBody:
+        description: "Account settings"
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/AccountSettings"
+      responses:
+        200:
+          description: "ok"
+        400:
+          description: "not valid input"
+        403:
+          description: "Access Denied"
   /module/response/{transaction_id}:
     post:
       tags:
@@ -542,6 +601,8 @@ components:
           $ref: "#/components/schemas/CredibilityLabel"
         module_values:
           $ref: "#/components/schemas/ModuleValues"
+        module_explanations:
+          $ref: "#/components/schemas/ModuleExplanations"
     UserFeedback:
       type: "object"
       properties:
@@ -621,6 +682,26 @@ components:
         credibility:
           type: "number"
           format: "float"
+    ModuleExplanations:
+      type: "object"
+      properties:
+        misinfome:
+          $ref: "#/components/schemas/Explanation"
+        content_analysis:
+          $ref: "#/components/schemas/Explanation"
+        claim_similarity:
+          $ref: "#/components/schemas/Explanation"
+    Explanation:
+      type: "object"
+      properties:
+        rating_explanation_format:
+          type: "string"
+          enum:
+            - "markdown"
+            - "link"
+            - "text"
+        rating_explanation:
+          type: "string"
     ModuleResponse:
       type: "object"
       properties:
@@ -778,7 +859,39 @@ components:
         url:
           type: string
           example: "https://twitter.com/ifrc/status/1258685075694256129"
-
+    EvaluationLog:
+      type: object
+      required:
+        - log_time
+        - log_category
+        - log_action
+      properties:
+        log_time:
+          type: string
+          format: date-time
+          example: "2020-04-04T20:33:30.465Z"
+        log_category:
+          type: string
+          example: "log_test"
+        related_item_url:
+          type: string
+          format: url
+        related_item_data:
+          type: string
+          example: "Label: Not Credible"
+        log_action:
+          type: string
+          example: 'Clicked on "Why can''t I see this?" button'
+    AccountSettings:
+      type: object
+      required:
+        - research
+        - communication
+      properties:
+        research:
+          type: boolean
+        communication:
+          type: boolean
   securitySchemes:
     bearerAuth:
       type: "http"
