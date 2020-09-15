@@ -533,6 +533,8 @@ components:
               $ref: "#/components/schemas/RuleEngineOutput"
         module_response_code:
           type: "object"
+        (dis)agreement_feedback:
+          $ref: "#/components/schemas/UserFeedback"
     RuleEngineOutput:
       type: "object"
       properties:
@@ -540,6 +542,37 @@ components:
           $ref: "#/components/schemas/CredibilityLabel"
         module_values:
           $ref: "#/components/schemas/ModuleValues"
+    UserFeedback:
+      type: "object"
+      properties:
+        credible:
+          $ref: "#/components/schemas/Feedback"
+        mostly_credible:
+          $ref: "#/components/schemas/Feedback"
+        credibility_uncertain:
+          $ref: "#/components/schemas/Feedback"
+        not_credible:
+          $ref: "#/components/schemas/Feedback"
+        not_verifiable:
+          $ref: "#/components/schemas/Feedback"
+    Feedback:
+      type: "object"
+      properties:
+        total_agree:
+          type: "number"
+          format: "int32"
+        total_disagree:
+          type: "number"
+          format: "int32"
+        user_feedback:
+          type: "string"
+        user_reviews:
+          type: "array"
+          items:
+            type: "object"
+            properties:
+              url:
+                type: "string"
     RuleEngineTestInput:
       type: "object"
       properties:
