@@ -52,8 +52,8 @@ paths:
       summary: "Register a new Plugin user"
       description: "Registers a plugin user with the platform"
       requestBody:
-        description: "The registration data"
         required: true
+        description: "The registration data"
         content:
           application/json:
             schema:
@@ -160,6 +160,33 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/ErrorResponse"
+  /change-settings:
+    post:
+      tags:
+        - "Browser Plugin"
+      summary: "Change some settings for the user"
+      security:
+        - bearerAuth: []
+      requestBody:
+        description: "The body containing the new settings for the user"
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ChangeSettings"
+      responses:
+        200:
+          description: "Successfully changed the settings"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AuthToken"
+        401:
+          description: "Failed to change settings. User not logged in"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
   /exit:
     get:
       tags:
@@ -252,7 +279,7 @@ paths:
           description: "Invalid input"
         403:
           description: "Access Denied"
-  /check-url:
+  /check-url/{source}:
     get:
       tags:
         - "Browser Plugin"
@@ -565,6 +592,8 @@ components:
               $ref: "#/components/schemas/RuleEngineOutput"
         module_response_code:
           type: "object"
+        (dis)agreement_feedback:
+          $ref: "#/components/schemas/UserFeedback"
     RuleEngineOutput:
       type: "object"
       properties:
@@ -574,6 +603,37 @@ components:
           $ref: "#/components/schemas/ModuleValues"
         module_explanations:
           $ref: "#/components/schemas/ModuleExplanations"
+    UserFeedback:
+      type: "object"
+      properties:
+        credible:
+          $ref: "#/components/schemas/Feedback"
+        mostly_credible:
+          $ref: "#/components/schemas/Feedback"
+        credibility_uncertain:
+          $ref: "#/components/schemas/Feedback"
+        not_credible:
+          $ref: "#/components/schemas/Feedback"
+        not_verifiable:
+          $ref: "#/components/schemas/Feedback"
+    Feedback:
+      type: "object"
+      properties:
+        total_agree:
+          type: "number"
+          format: "int32"
+        total_disagree:
+          type: "number"
+          format: "int32"
+        user_feedback:
+          type: "string"
+        user_reviews:
+          type: "array"
+          items:
+            type: "object"
+            properties:
+              url:
+                type: "string"
     RuleEngineTestInput:
       type: "object"
       properties:
@@ -662,8 +722,8 @@ components:
     CoinformRegisterUser:
       type: "object"
       required:
-        - email
-        - password
+        - "email"
+        - "password"
       properties:
         email:
           type: "string"
@@ -695,6 +755,13 @@ components:
           type: "string"
         newPassword:
           type: "string"
+    ChangeSettings:
+      type: "object"
+      properties:
+        research:
+          type: "boolean"
+        communication:
+          type: "boolean"
     CheckUrl:
       type: "object"
       properties:
