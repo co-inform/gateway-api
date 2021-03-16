@@ -279,7 +279,7 @@ paths:
           description: "Invalid input"
         403:
           description: "Access Denied"
-  /check-url/{source}:
+  /check-url:
     get:
       tags:
         - "Browser Plugin"
@@ -287,8 +287,8 @@ paths:
       description: |
         Provide a URL to the CoInform system to control for a user before a post is made
       parameters:
-      - name: "source"
-        in: "query"
+      - in: "query"
+        name: "source"
         description: "the url to be checked"
         required: true
         schema:
@@ -491,7 +491,7 @@ components:
       enum:
         - "credible"
         - "mostly_credible"
-        - "mostly_not_credible"
+        - "credibility_uncertain"
         - "not_credible"
         - "not_verifiable"
     AccuracyLabel:
@@ -603,6 +603,8 @@ components:
           $ref: "#/components/schemas/ModuleValues"
         module_explanations:
           $ref: "#/components/schemas/ModuleExplanations"
+        module_labels:
+          $ref: "#/components/schemas/ModuleLabels"
     UserFeedback:
       type: "object"
       properties:
@@ -664,6 +666,15 @@ components:
             conf:
               type: "number"
               format: "float"
+    ModuleLabels:
+      type: "object"
+      properties:
+        misinfome:
+          $ref: "#/components/schemas/CredibilityLabel"
+        content_analysis:
+          $ref: "#/components/schemas/CredibilityLabel"
+        claim_similarity:
+          $ref: "#/components/schemas/CredibilityLabel"
     ModuleValues:
       type: "object"
       properties:
@@ -765,23 +776,19 @@ components:
     CheckUrl:
       type: "object"
       properties:
-        credibility:
+        final_credibility:
+          $ref: "#/components/schemas/CredibilityLabel"
+        module_values:
           type: "object"
           properties:
-            value:
-              type: "number"
-              format: "float"
-            confidence:
-              type: "number"
-              format: "float"
-        assesments:
-          type: "array"
-          items:
-            type: "object"
-            description: "the different assesments made by the module"
-        item_reviewed:
-          type: "string"
-          example: "https://www.breitbart.com/clips/2020/04/05/stephen-moore-on-coronavirus-impact-we-are-facing-a-potential-great-depression-scenario/"
+              misinfome:
+                $ref: "#/components/schemas/Values"
+        module_labels:
+          type: "object"
+          properties:
+              misinfome:
+                $ref: "#/components/schemas/CredibilityLabel"
+
     Review:
       type: "object"
       properties:
