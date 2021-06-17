@@ -768,11 +768,16 @@ components:
           type: "string"
     ChangeSettings:
       type: "object"
+      required:
+        - "research"
+        - "communication"
       properties:
         research:
           type: "boolean"
         communication:
           type: "boolean"
+        config:
+          type: "object"
     CheckUrl:
       type: "object"
       properties:
